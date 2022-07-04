@@ -2,8 +2,10 @@ package xyz.adrianweb.workshifts.core.usecases;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import xyz.adrianweb.workshifts.core.domain.model.WorkShift;
-import xyz.adrianweb.workshifts.core.domain.ports.IWorkerShifts;
+import reactor.core.publisher.Mono;
+import xyz.adrianweb.workshifts.core.domain.WorkShift;
+import xyz.adrianweb.workshifts.core.domain.Worker;
+import xyz.adrianweb.workshifts.core.ports.IWorkerShiftsUsecase;
 import xyz.adrianweb.workshifts.core.validation.exceptions.ValidationMessages;
 import xyz.adrianweb.workshifts.core.validation.guards.Text;
 import xyz.adrianweb.workshifts.infrastructure.database.IWorkerShiftsRepo;
@@ -14,13 +16,33 @@ import static xyz.adrianweb.workshifts.core.validation.guards.Guard.guard;
 
 @Service
 @RequiredArgsConstructor
-public class WorkerShiftsUsecase implements IWorkerShifts {
+public class WorkerShiftsUsecase implements IWorkerShiftsUsecase {
 
     private final IWorkerShiftsRepo iWorkerShiftsRepo;
 
     @Override
-    public List<WorkShift> getWorkShiftsByWorker(String workerName) {
-        guard(Text.of(workerName)).againstNullOrWhitespace(ValidationMessages.WORKER_NAME_EMPTY);
-        return iWorkerShiftsRepo.findByWorker(workerName);
+    public List<WorkShift> getWorkShiftsByWorker(Worker worker) {
+        guard(Text.of(worker.getName())).againstNullOrWhitespace(ValidationMessages.WORKER_NAME_EMPTY);
+        return iWorkerShiftsRepo.getWorkShiftsByWorker(worker);
+    }
+
+    @Override
+    public List<WorkShift> addWorkerToShift(Worker worker, WorkShift workShift) {
+        guard(Text.of(worker.getName())).againstNullOrWhitespace(ValidationMessages.WORKER_NAME_EMPTY);
+        guard(workShift).againstNull(ValidationMessages.SHIFT_IS_NULL);
+        guard(workShift).againstInvalidShift(ValidationMessages.SHIFT_PERIOD_DOES_NOT_MATCH);
+
+        List<WorkShift> workShifts = iWorkerShiftsRepo.getWorkShifts();
+        guard(workShift).againstNonExistingShift(workShifts, ValidationMessages.SHIFT_IS_OUTSIDE_OF_KNOWN_WORKING_DAY_HOURS);
+
+        List<WorkShift> workShiftsByWorker = iWorkerShiftsRepo.getWorkShiftsByWorker(worker);
+        guard(workShift).againstMoreThanOneShiftPerDay(workShiftsByWorker, ValidationMessages.SHIFTS_MORE_THAN_1_PER_DAY);
+
+        return iWorkerShiftsRepo.addWorkerToShift(worker, workShift);
+    }
+
+    @Override
+    public Mono<Worker> createWorker(Worker worker) {
+        return iWorkerShiftsRepo.upsert(worker);
     }
 }

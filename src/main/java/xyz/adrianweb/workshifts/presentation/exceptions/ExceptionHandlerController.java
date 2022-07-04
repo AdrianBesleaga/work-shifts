@@ -7,13 +7,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import xyz.adrianweb.workshifts.core.validation.exceptions.ValidationException;
 
+import java.util.Map;
+
 @ControllerAdvice
 public class ExceptionHandlerController {
 
     @ResponseBody
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    String badRequestHandler(ValidationException ex) {
-        return ex.getMessage();
+    Map<String, String> badRequestHandler(ValidationException ex) {
+        return Map.of("error", ex.getMessage());
     }
 }

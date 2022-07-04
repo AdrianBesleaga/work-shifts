@@ -1,9 +1,6 @@
-package xyz.adrianweb.workshifts.core.domain.model;
+package xyz.adrianweb.workshifts.core.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class WorkShift {
     private LocalDateTime shiftStart;
     private LocalDateTime shiftEnd;

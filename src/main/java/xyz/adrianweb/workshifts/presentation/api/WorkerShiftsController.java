@@ -1,12 +1,11 @@
 package xyz.adrianweb.workshifts.presentation.api;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import xyz.adrianweb.workshifts.core.domain.model.WorkShift;
-import xyz.adrianweb.workshifts.core.domain.ports.IWorkerShifts;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+import xyz.adrianweb.workshifts.core.domain.WorkShift;
+import xyz.adrianweb.workshifts.core.domain.Worker;
+import xyz.adrianweb.workshifts.core.ports.IWorkerShiftsUsecase;
 
 import java.util.List;
 
@@ -15,10 +14,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkerShiftsController {
 
-    private final IWorkerShifts iWorkerShifts;
+    private final IWorkerShiftsUsecase iWorkerShiftsUsecase;
 
     @GetMapping("/shifts/{workerName}")
     public List<WorkShift> getWorkerShifts(@PathVariable String workerName) {
-        return iWorkerShifts.getWorkShiftsByWorker(workerName);
+        Worker worker = Worker.builder().name(workerName).build();
+        return iWorkerShiftsUsecase.getWorkShiftsByWorker(worker);
+    }
+
+    @PostMapping("/workers")
+    public Mono<Worker> createWorker(@RequestBody Worker worker) {
+        return iWorkerShiftsUsecase.createWorker(worker);
+    }
+
+    @PutMapping("/shifts/{workerName}")
+    public List<WorkShift> addWorkerToShift(@PathVariable String workerName, @RequestBody WorkShift workShift) {
+        Worker worker = Worker.builder().name(workerName).build();
+        return iWorkerShiftsUsecase.addWorkerToShift(worker, workShift);
     }
 }
