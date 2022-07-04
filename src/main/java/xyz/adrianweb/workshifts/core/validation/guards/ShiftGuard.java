@@ -42,7 +42,7 @@ public class ShiftGuard extends BaseGuard<WorkShift> {
         return sameDayShift.isPresent();
     }
 
-    public boolean againstNonExistingShifts(List<WorkShift> workShifts) {
+    private boolean againstNonExistingShifts(List<WorkShift> workShifts) {
         return !workShifts.contains(this.value);
     }
 }
