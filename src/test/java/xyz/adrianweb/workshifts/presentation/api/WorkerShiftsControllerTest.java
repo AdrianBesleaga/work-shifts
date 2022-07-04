@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import xyz.adrianweb.workshifts.core.domain.model.WorkShift;
-import xyz.adrianweb.workshifts.core.domain.usecases.WorkerShiftsImpl;
+import xyz.adrianweb.workshifts.core.usecases.WorkerShiftsUsecase;
 import xyz.adrianweb.workshifts.infrastructure.database.IWorkerShiftsRepo;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @WebFluxTest(controllers = WorkerShiftsController.class)
 @ExtendWith(SpringExtension.class)
-@Import(WorkerShiftsImpl.class)
+@Import(WorkerShiftsUsecase.class)
 class WorkerShiftsControllerTest {
 
     @Autowired

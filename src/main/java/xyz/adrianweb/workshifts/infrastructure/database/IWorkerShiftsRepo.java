@@ -6,11 +6,13 @@ import xyz.adrianweb.workshifts.core.domain.model.Worker;
 import java.util.List;
 
 public interface IWorkerShiftsRepo {
-    public Worker save(Worker worker);
+    Worker save(Worker worker);
 
-    public WorkShift save(WorkShift workShift);
+    WorkShift save(WorkShift workShift);
 
-    public Worker findById(String id);
+    Worker findById(String id);
 
-    public List<WorkShift> findByWorker(String workerName);
+    List<WorkShift> findByWorker(String workerName);
+
+    WorkShift addWorkerToShift(Worker worker, WorkShift workShift);
 }
