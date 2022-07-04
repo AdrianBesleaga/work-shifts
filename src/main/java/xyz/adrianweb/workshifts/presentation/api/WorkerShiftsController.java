@@ -2,6 +2,7 @@ package xyz.adrianweb.workshifts.presentation.api;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import xyz.adrianweb.workshifts.core.domain.WorkShift;
 import xyz.adrianweb.workshifts.core.domain.Worker;
@@ -17,7 +18,7 @@ public class WorkerShiftsController {
     private final IWorkerShiftsUsecase iWorkerShiftsUsecase;
 
     @GetMapping("/shifts/{workerName}")
-    public List<WorkShift> getWorkerShifts(@PathVariable String workerName) {
+    public Flux<WorkShift> getWorkerShifts(@PathVariable String workerName) {
         Worker worker = Worker.builder().name(workerName).build();
         return iWorkerShiftsUsecase.getWorkShiftsByWorker(worker);
     }
@@ -28,7 +29,7 @@ public class WorkerShiftsController {
     }
 
     @PutMapping("/shifts/{workerName}")
-    public List<WorkShift> addWorkerToShift(@PathVariable String workerName, @RequestBody WorkShift workShift) {
+    public Flux<WorkShift> addWorkerToShift(@PathVariable String workerName, @RequestBody WorkShift workShift) {
         Worker worker = Worker.builder().name(workerName).build();
         return iWorkerShiftsUsecase.addWorkerToShift(worker, workShift);
     }
