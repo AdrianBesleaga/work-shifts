@@ -27,3 +27,8 @@ It is a 24 hour timetable 0-8, 8-16, 16-24
 - Spring WebFlux
 - Hexagonal Architecture
 
+
+Demo:
+![Screenshot](assets/assign-worker-to-shift.png)
+---
+![Screenshot](assets/shifts-exceptions.png)
